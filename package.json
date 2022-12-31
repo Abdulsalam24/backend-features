@@ -1,0 +1,25 @@
+{
+  "name": "bkaree",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "server": "nodemon ./server/app",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server \" \"npm run client \""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bkaree/bkaree.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bkaree/bkaree/issues"
+  },
+  "homepage": "https://github.com/bkaree/bkaree#readme",
+  "dependencies": {
+    "concurrently": "^7.6.0",
+    "nodemon": "^2.0.20"
+  }
+}
