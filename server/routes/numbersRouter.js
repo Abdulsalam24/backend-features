@@ -1,9 +1,9 @@
 import { Router } from "express";
 
-const numbersRouter = Router()
+const router = Router()
 
 
-numbersRouter.get("/add/:x/:y", (req, res) => {
+router.get("/add/:x/:y", (req, res) => {
     const { x, y } = req.params
 
     const sum = +x + +y
@@ -15,11 +15,11 @@ numbersRouter.get("/add/:x/:y", (req, res) => {
     res.status(200).json({ sum });
 })
 
-numbersRouter.get("/teapot", (req, res) => {
+router.get("/teapot", (req, res) => {
     res.status(418).send(true);
 })
 
-numbersRouter.post("/teapot", (req, res) => {
+router.post("/teapot", (req, res) => {
 
     if (typeof req.body.areYouATeapot != "boolean" || Object.keys(req.body) != "areYouATeapot") {
         res.status(418).json({ message: 'Something went wrong' })
@@ -32,14 +32,14 @@ numbersRouter.post("/teapot", (req, res) => {
     }
 })
 
-numbersRouter.get("/hello", (req, res) => {
+router.get("/hello", (req, res) => {
     res.status(400).json({ message: `Please provide a name` })
 })
 
-numbersRouter.get("/hello/:name", (req, res) => {
+router.get("/hello/:name", (req, res) => {
     res.status(200).json({ message: `Hello ${name}!` })
 })
 
 
 
-export default numbersRouter
+export default router

@@ -30,6 +30,10 @@ const postSchema = new mongoose.Schema(
           maxlength: 120,
         },
         author: { type: ObjectId, ref: 'User' },
+        created: {
+          type: Date,
+          default: Date.now,
+        },
       },
     ],
   },

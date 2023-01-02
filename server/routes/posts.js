@@ -12,20 +12,26 @@ router.get("/", async (request, response) => {
     { path: "author", select: ["username", "profile_image"] },
     {
       path: "comments",
-      populate: { path: "author", select: ["username", "profile_image"] },
+      populate: { path: "author", select: ["username", "profile_image", "created"] },
+    },
+    {
+      path: "likes",
+      populate: { path: "author", select: ["username"] },
     },
   ];
+
   const posts = await Post.find({})
-    .sort({ created: -1 })
-    .populate(populateQuery)
-    .exec();
+  .sort({ created: -1 })
+  .populate(populateQuery)
+  .exec();
 
   response.json(posts);
 });
 
-router.post("/", requireAuth, async (request, response, next) => {
+// requireAuth,next
+router.post("/", async (request, response, next) => {
   const { text } = request.body;
-  const { user } = request;
+  const { user } = request.body;
 
   const post = new Post({
     text: text,
@@ -35,10 +41,9 @@ router.post("/", requireAuth, async (request, response, next) => {
   try {
     const savedPost = await post.save();
     user.posts = user.posts.concat(savedPost._id);
-
-    await user.save();
-
+    await post.save();
     response.json(savedPost.toJSON());
+    return
   } catch (error) {
     next(error);
   }
@@ -61,8 +66,9 @@ router.get("/:id", async (request, response) => {
     response.status(404).end();
   }
 });
-// HERE IS THE DELETE FUNCTION
-router.delete("/:id", requireAuth, async (request, response, next) => {
+
+// HERE IS THE DELETE FUNCTION 
+router.delete("/:id", requireAuth, async (request, response,) => {
   const { userId } = request.body;
   const { id } = request.params;
   const post = await Post.findOne({ _id: id });

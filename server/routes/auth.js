@@ -3,6 +3,8 @@ import bcrypt from 'bcryptjs'
 import User from '../models/user.js'
 import keys from '../config/keys.js'
 import jwt from 'jsonwebtoken'
+import multer from 'multer'
+
 
 const router = express.Router()
 
@@ -73,46 +75,67 @@ router.route('/').get((req, res, next) => {
 //     .send({ token, username, uid: user.id, profile_image: user.profile_image })
 // })
 
+const storage = multer.diskStorage({
+  destination: "./public/",
+  filename: function (req, file, cb) {
+    cb(null, "IMAGE-" + Date.now() + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 1000000 },
+}).single("myfile");
 
 
+router.post("/upload", (req, res) => {
+  console.log("Request ---", req.body);
+  console.log("Request file ---", req.file);//Here you get file.
+  const file = new User();
+  file.profile_image = req.file;
+  file.save().then(() => {
+    res.send({ message: "uploaded successfully" })
+  })
+  /*Now do where ever you want to do*/
+});
 
 router.post("/signup", async (req, res) => {
 
   const { username, passwordHash, email, profile_image } = req.body
 
   if (passwordHash.length <= 8 || passwordHash.length >= 20) {
-      res.status(401).json({ message: "password must be between 8 and 20 characters" })
-      return;
+    res.status(401).json({ message: "password must be between 8 and 20 characters" })
+    return;
   }
 
   if (!username || !passwordHash || !email) {
-      res.status(400).json({ message: "please enter field" })
-      return;
+    res.status(400).json({ message: "please enter field" })
+    return;
   }
 
   const userExist = await User.findOne({ email })
 
 
   if (userExist) {
-      res.status(401).json({ message: "User already exist" })
-      return;
+    res.status(401).json({ message: "User already exist" })
+    return;
   }
 
   const salt = await bcrypt.genSalt(10)
   const hashedpassword = await bcrypt.hash(passwordHash, salt)
 
   const user = await User.create({
-      username,
-      email,
-      passwordHash: hashedpassword,
-      profile_image
+    username,
+    email,
+    passwordHash: hashedpassword,
+    profile_image
   })
 
   // newUser
   if (user) {
-      res.status(200).json(user)
+    res.status(200).json(user)
   } else {
-      res.status(401).json({ message: "User data wrong" })
+    res.status(401).json({ message: "User data wrong" })
   }
 
 })
@@ -123,12 +146,11 @@ router.post("/signin", async (req, res) => {
   const user = await User.findOne({ username })
 
   if (user && (username === user.username) && (await bcrypt.compare(passwordHash, user.passwordHash))) {
-      res.status(200).json(user)
+    res.status(200).json(user)
   } else {
-      res.status(401).json({ message: "wrong credential" })
+    res.status(401).json({ message: "wrong credential" })
   }
 })
-
 
 router.get("/users/:uid", async (req, res) => {
   const { uid } = req.params
@@ -179,6 +201,7 @@ router.put("/users/avatar/:uid", async (req, res) => {
   }
   res.status(200).json(user)
 })
+
 
 
 
