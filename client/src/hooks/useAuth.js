@@ -1,5 +1,6 @@
 import { useReducer, useEffect, useContext, createContext } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import axios from 'utils/axiosConfig.js'
 
 const initialState = {
@@ -61,7 +62,7 @@ export function useProvideAuth() {
 
   const signin = async (username, password) => {
     try {
-      const response = await axios.post(`auth/signin`, {
+      const response = await axios.post(`http://localhost:3001/api/auth/signin`, {
         username,
         passwordHash: password,
       })
@@ -78,7 +79,7 @@ export function useProvideAuth() {
       return response
     } catch (error) {
       if (error.response) {
-        throw new Error(error.response);
+        throw new Error(error.response.data.message);
       } else {
         throw error;
       }
@@ -100,8 +101,8 @@ export function useProvideAuth() {
 
     } catch (error) {
       if (error.response) {
-        console.log(error, 'errorerrorerror')
-        throw new Error(error.response);
+        throw new Error(error.response.data.message);
+
       } else {
         throw error;
       }

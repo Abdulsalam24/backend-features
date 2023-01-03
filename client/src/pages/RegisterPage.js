@@ -113,9 +113,7 @@ export default function RegisterPage() {
       return navigate('/')
 
     } catch (error) {
-      toast.error(error.response.data.error)
-      console.log(error, 'errorerrorerrorerrorerrorerrorerror')
-
+      toast.error(error.message)
       setData({
         ...data,
         isSubmitting: false,
@@ -142,7 +140,7 @@ export default function RegisterPage() {
     axios.post("/api/auth/upload", formData, config)
       .then((response) => {
         alert("The file is successfully uploaded");
-        console.log(response , 'responseee')
+        console.log(response, 'responseee')
       }).catch((error) => {
         console.log(error)
       });
