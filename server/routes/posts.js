@@ -29,7 +29,7 @@ router.get("/", async (request, response) => {
 });
 
 // requireAuth,next
-router.post("/", async (request, response, next) => {
+router.post("/",requireAuth, async (request, response, next) => {
   const { text } = request.body;
   const { user } = request.body;
 

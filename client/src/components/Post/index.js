@@ -34,8 +34,12 @@ const Post = ({
   const {
     state: { user },
   } = useProvideAuth();
+
   const [likedState, setLiked] = useState(likes.includes(user.uid));
   const [likesState, setLikes] = useState(likes.length);
+
+
+  
   const handleInputChange = (event) => {
     setData({
       ...data,
@@ -109,6 +113,7 @@ const Post = ({
     setStateComments(comments);
   }, [comments]);
 
+
   return (
     <>
       <ListGroup.Item
@@ -163,19 +168,33 @@ const Post = ({
                 <span>{comments.length > 0 ? comments.length : 0}</span>
               </div>
               <div
-                className={`d-flex align-items-center mr-3 ${
-                  likedState ? "isLiked" : ""
-                }`}
+                className={`relative d-flex align-items-center mr-3 ${likedState ? "isLiked" : ""
+                  }`}
               >
-                <Button variant="link" size="md" onClick={handleToggleLike}>
-                  {likedState ? <LikeIconFill /> : <LikeIcon />}
-                </Button>
+
+                <div className="likes">
+                  <div className="like">
+                    <div className="toottip visible">
+                      {
+                        likes.map((l) => (<p>{l.username}</p>))
+                      }
+                    </div>
+                  </div>
+                  <Button variant="link" size="md" onClick={handleToggleLike}>
+                    {likedState ? <LikeIconFill /> : <LikeIcon />}
+                  </Button>
+
+                </div>
+
+
+
                 <span>{likesState}</span>
               </div>
             </div>
           </Media.Body>
         </Media>
       </ListGroup.Item>
+      
       {detail && (
         <div>
           <br />
@@ -231,6 +250,7 @@ const Post = ({
                     />
                   </Figure>
                   <span>{c.text}</span>
+                  <span>{timeSince(c.created)}</span>
                 </div>
               ))}
             </Container>

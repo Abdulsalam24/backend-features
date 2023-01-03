@@ -54,7 +54,7 @@ const LoginPage = () => {
       setData({
         ...data,
         isSubmitting: false,
-        errorMessage: error ? error.message || error.statusText : null,
+        errorMessage: error ? error.error || error.statusText : null,
       })
     }
   }

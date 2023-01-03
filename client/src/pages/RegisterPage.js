@@ -21,6 +21,7 @@ import tiger from '../img/tiger.svg'
 import whale from '../img/whale.svg'
 import lion from '../img/lion.svg'
 import { toast } from 'react-toastify'
+import axios from 'axios'
 
 
 const initialState = {
@@ -45,6 +46,10 @@ export const avatars = [
 
 export default function RegisterPage() {
   const [data, setData] = useState(initialState)
+  const [file, setFile] = useState({
+    file: null
+  })
+
   const auth = useProvideAuth()
 
   let navigate = useNavigate();
@@ -74,8 +79,6 @@ export default function RegisterPage() {
       [event.target.name]: event.target.value,
     })
   }
-
-
 
   const handleSignup = async (event) => {
     const form = event.currentTarget
@@ -110,7 +113,7 @@ export default function RegisterPage() {
       return navigate('/')
 
     } catch (error) {
-      toast.error(error.response)
+      toast.error(error.response.data.error)
       console.log(error, 'errorerrorerrorerrorerrorerrorerror')
 
       setData({
@@ -126,6 +129,30 @@ export default function RegisterPage() {
       setProfileImage(avatars[index])
     }
   }
+
+  const onFormSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('myfile', file);
+    const config = {
+      headers: {
+        'content-type': 'multipart/form-data'
+      }
+    };
+    axios.post("/api/auth/upload", formData, config)
+      .then((response) => {
+        alert("The file is successfully uploaded");
+        console.log(response , 'responseee')
+      }).catch((error) => {
+        console.log(error)
+      });
+  }
+
+  const onChange = (e) => {
+    setFile({ file: e.target.files });
+  }
+
+  console.log(file.file, 'file.filefile.filefile.filefile.file')
 
   return (
     <div style={{ overflow: "auto", height: "100vh" }}>
@@ -168,8 +195,16 @@ export default function RegisterPage() {
                       <img src={avatar} alt="avatar" />
                     </div>
                   ))
+
                 }
               </div>
+
+              {/* <form onSubmit={onFormSubmit} className="form-file">
+                <h1>File Upload</h1>
+                <input type="file" className="custom-file-input" name="myImage" onChange={onChange} />
+                <button className="upload-button" onClick={onFormSubmit} type="submit">Upload to DB</button>
+              </form> */}
+
             </div>
 
             <Form.Group>

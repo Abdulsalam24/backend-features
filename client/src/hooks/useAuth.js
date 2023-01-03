@@ -22,7 +22,7 @@ const reducer = (state, action) => {
         isAuthenticated: false,
         user: null,
       }
- 
+
     default:
       return state
   }
@@ -58,7 +58,7 @@ export function useProvideAuth() {
 
   let navigate = useNavigate();
 
-  
+
   const signin = async (username, password) => {
     try {
       const response = await axios.post(`auth/signin`, {
@@ -78,7 +78,7 @@ export function useProvideAuth() {
       return response
     } catch (error) {
       if (error.response) {
-        throw new Error(error.response.data.message);
+        throw new Error(error.response);
       } else {
         throw error;
       }
@@ -87,7 +87,7 @@ export function useProvideAuth() {
 
   const signup = async (username, password, email, profile_image) => {
     try {
-      const res = await axios.post(`auth/signup`, {
+      const res = await axios.post(`http://localhost:3001/api/auth/signup`, {
         username,
         passwordHash: password,
         email,
@@ -100,7 +100,8 @@ export function useProvideAuth() {
 
     } catch (error) {
       if (error.response) {
-        throw new Error(error.response.data.message);
+        console.log(error, 'errorerrorerror')
+        throw new Error(error.response);
       } else {
         throw error;
       }

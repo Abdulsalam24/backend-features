@@ -18,3 +18,24 @@
 Link {
   cursor: pointer;
 }
+
+.likes {
+  .like {
+    position: absolute;
+    right: 20px;
+    bottom: 40px;
+    .toottip {
+      background-color: rgb(211, 211, 211);
+      padding: 2px;
+      height: 25px;
+      display: none;
+      line-height: 25px;
+      gap: 10px;
+    }
+  }
+  &:hover {
+    .visible {
+      display: flex;
+    }
+  }
+}

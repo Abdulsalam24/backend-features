@@ -31,6 +31,7 @@ const Feed = () => {
     });
   };
 
+
   const handlePostSubmit = async (event) => {
     const form = event.currentTarget;
     event.preventDefault();
@@ -49,8 +50,14 @@ const Feed = () => {
     axios
       .post("/posts", {
         text: data.postText,
-        author: user.username,
-      })
+        user
+      }, {
+        headers: {
+          'Authorization': 'Bearer YOUR_TOKEN_HERE'
+        },
+      }
+
+      )
       .then(
         (res) => {
           setData(initialState);
@@ -76,8 +83,6 @@ const Feed = () => {
       );
   };
 
-  console.log(posts);
-
   // I INSERTED MY SEARCH FUNCTION HERE
   const searchAllPosts = (query) => {
     if (!query) {
@@ -100,7 +105,7 @@ const Feed = () => {
   useEffect(() => {
     const getPosts = async () => {
       try {
-        const allPosts = await axios.get("posts");
+        const allPosts = await axios.get("/posts");
         console.log(allPosts);
         setPosts(allPosts.data);
         setPostLoading(false);
@@ -134,6 +139,7 @@ const Feed = () => {
           {data.errorMessage && (
             <span className="form-error">{data.errorMessage}</span>
           )}
+
           <Button
             className="float-right mt-3"
             type="submit"
@@ -141,6 +147,7 @@ const Feed = () => {
           >
             {data.isSubmitting ? <LoadingSpinner /> : "Post"}
           </Button>
+
         </Form>
       </Container>
       <div>
