@@ -8,7 +8,6 @@ export const database = {
   url: process.env.MONGODB_URI ||
     `mongodb+srv://abbey:mongoatlas@cluster0.ruv8gha.mongodb.net/snippets?retryWrites=true`,
 };
-
 export const jwt = {
   secret: process.env.JWT_SECRET || "jwt-secret",
   tokenLife: "7d",

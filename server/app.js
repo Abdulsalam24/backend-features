@@ -55,10 +55,8 @@ app.use(requestLogger)
 app.use(express.static(join(__dirname, 'public')))
 
 
-
 // // api router
 app.use(keys.app.apiEndpoint, router)
-
 
 
 // // catch 404 and forward to error handler

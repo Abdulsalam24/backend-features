@@ -21,17 +21,17 @@ router.get("/", async (request, response) => {
   ];
 
   const posts = await Post.find({})
-  .sort({ created: -1 })
-  .populate(populateQuery)
-  .exec();
+    .sort({ created: -1 })
+    .populate(populateQuery)
+    .exec();
 
   response.json(posts);
 });
 
 // requireAuth,next
-router.post("/", async (request, response, next) => {
+router.post("/", requireAuth, async (request, response, next) => {
   const { text } = request.body;
-  const { user } = request.body;
+  const { user } = request;
 
   const post = new Post({
     text: text,
@@ -41,9 +41,10 @@ router.post("/", async (request, response, next) => {
   try {
     const savedPost = await post.save();
     user.posts = user.posts.concat(savedPost._id);
-    await post.save();
+
+    await user.save();
+
     response.json(savedPost.toJSON());
-    return
   } catch (error) {
     next(error);
   }

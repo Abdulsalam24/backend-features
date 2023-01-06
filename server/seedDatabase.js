@@ -5,6 +5,7 @@ import User from "./models/user.js";
 
 import exec from "await-exec";
 
+
 async function seedDatabase() {
   try {
     const users = await User.find({});
