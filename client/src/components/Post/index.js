@@ -39,7 +39,7 @@ const Post = ({
   const [likesState, setLikes] = useState(likes.length);
 
 
-  
+
   const handleInputChange = (event) => {
     setData({
       ...data,
@@ -122,22 +122,39 @@ const Post = ({
         key={_id}
       >
         <Media className="w-100 d-flex gap-3">
-          <Link to={`/u/${author.username}`}>
+          <Link to={`/u/${author?.username}`}>
             <Figure
               className="mr-4 bg-border-color rounded-circle overflow-hidden ml-2 p-1"
               style={{ height: "60px", width: "60px", marginTop: "0px" }}
             >
-              <Figure.Image
-                src={author.profile_image}
+              {/* <Figure.Image
+                src={author?.profile_image}
                 className="w-100 h-100 mr-4"
+              /> */}
+
+
+              <Figure.Image
+                src={author?.profile_image || `${window.location.pathname === "/" ? "." : ".."}/uploads/${author?.profile_image}`}
+                alt="dp"
+                className='w-100 h-100'
               />
+              {/* (
+                  <Figure.Image
+                    src={`${window.location.pathname === "/" ? "." : ".."}/uploads/${author?.profile_image}`}
+                    alt="dp"
+                    className='w-100 h-100'
+                  />
+                )
+              */}
+
+
             </Figure>
           </Link>
 
           <Media.Body className="w-100">
             <div className="d-flex align-items-center">
               <span className="text-muted mr-1 username">
-                @{author.username}
+                @{author?.username}
               </span>
               <pre className="m-0 text-muted">{" - "}</pre>
               <span className="text-muted">{timeSince(created)} ago</span>
@@ -150,7 +167,7 @@ const Post = ({
 
             <div className="d-flex justify-content-end align-items-bottom">
               <div className="d-flex align-items-center">
-                {user.username === author.username && (
+                {user?.username === author?.username && (
                   <Container className="close">
                     <TrashIcon onClick={handleDeletePost} />
                   </Container>
@@ -176,7 +193,7 @@ const Post = ({
                   <div className="like">
                     <div className="toottip visible">
                       {
-                        likes.map((l) => (<p>{l.username}</p>))
+                        likes.map((l) => (<p>{l?.username}</p>))
                       }
                     </div>
                   </div>
@@ -194,7 +211,7 @@ const Post = ({
           </Media.Body>
         </Media>
       </ListGroup.Item>
-      
+
       {detail && (
         <div>
           <br />

@@ -67,8 +67,6 @@ export function useProvideAuth() {
         passwordHash: password,
       })
 
-      console.log(response.data, 'datadatadatadatadata')
-
       localStorage.setItem('MernAppUser', JSON.stringify(response.data))
 
       dispatch({
@@ -86,14 +84,10 @@ export function useProvideAuth() {
     }
   }
 
-  const signup = async (username, password, email, profile_image) => {
+  const signup = async (formData, password, username) => {
+
     try {
-      const res = await axios.post(`http://localhost:3001/api/auth/signup`, {
-        username,
-        passwordHash: password,
-        email,
-        profile_image,
-      })
+      const res = await axios.post(`http://localhost:3001/api/auth/signup`, formData)
 
       await signin(username, password)
 

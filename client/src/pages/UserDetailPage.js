@@ -13,6 +13,7 @@ import { useRequireAuth } from "hooks/useRequireAuth";
 import axios from "utils/axiosConfig.js";
 import { avatars } from "./RegisterPage";
 import { toast } from "react-toastify";
+import Avartars from "components/Avartars";
 
 const UserDetailPage = () => {
   const { state } = useProvideAuth();
@@ -123,7 +124,7 @@ const UserDetailPage = () => {
       return;
     }
 
-    if (profileImage === user.profile_image) {
+    if (profileImage === user?.profile_image) {
       toast("Please select a new avatar")
       return;
     }
@@ -131,7 +132,7 @@ const UserDetailPage = () => {
     try {
       setLoading(true);
       const updateProfileImg = await axios.put(`auth/users/avatar/${params.uid}`, { profileImage });
-      
+
       setLoading(false);
       setUser(updateProfileImg.data);
     } catch (error) {
@@ -178,20 +179,20 @@ const UserDetailPage = () => {
                 backgroundColor: "white",
               }}
             >
-              <Figure.Image src={user?.profile_image} className="w-100 h-100" />
+              {
+                user?.profile_image.split("/").includes("static") ? (
+                  <Figure.Image src={user?.profile_image} className="w-100 h-100" />
+                ) : (
+                  <Figure.Image src={`../uploads/${user?.profile_image}`} className="w-100 h-100" />
+                )
+              }
             </Figure>
 
             <Card.Title>{user?.username}</Card.Title>
             <Card.Title>{user?.email}</Card.Title>
 
             <div className='avatars'>
-              {
-                avatars.map((avatar, index) => (
-                  <div className={`${profileImage === avatar && 'selected'}`} key={index} onClick={() => handleSelect(index)}>
-                    <img src={avatar} alt="avatar" />
-                  </div>
-                ))
-              }
+              <Avartars profileImage={profileImage} handleSelect={handleSelect} />
               <p onClick={updateProfileImg}>update Avatar</p>
             </div>
 

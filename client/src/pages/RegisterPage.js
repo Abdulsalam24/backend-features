@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom'
 import { useProvideAuth } from 'hooks/useAuth'
 import { LandingHeader, LoadingSpinner } from 'components'
 import { setAuthToken } from 'utils/axiosConfig'
+import FileBase64 from 'react-file-base64';
 
 import bird from '../img/bird.svg'
 import dog from '../img/dog.svg'
@@ -22,6 +23,7 @@ import whale from '../img/whale.svg'
 import lion from '../img/lion.svg'
 import { toast } from 'react-toastify'
 import axios from 'axios'
+import Avartars from 'components/Avartars'
 
 
 const initialState = {
@@ -46,10 +48,6 @@ export const avatars = [
 
 export default function RegisterPage() {
   const [data, setData] = useState(initialState)
-  const [file, setFile] = useState({
-    file: null
-  })
-
   const auth = useProvideAuth()
 
   let navigate = useNavigate();
@@ -72,7 +70,11 @@ export default function RegisterPage() {
     let img = imgs[Math.floor(Math.random() * imgs.length)]
     return `${img}`
   }
-
+  const handleSelect = (index) => {
+    if (avatars.indexOf(avatars[index]) === index) {
+      setProfileImage(avatars[index])
+    }
+  }
   const handleInputChange = (event) => {
     setData({
       ...data,
@@ -80,14 +82,9 @@ export default function RegisterPage() {
     })
   }
 
-  const handleSignup = async (event) => {
-    const form = event.currentTarget
-    event.preventDefault()
-    event.stopPropagation()
-
-    if (form.checkValidity() === false) {
-
-    }
+  const handleSignup = async (e) => {
+    e.preventDefault()
+    e.stopPropagation()
 
     if (data.username === '' || data.email === '' || data.password === '') {
       toast.error("All filed are required")
@@ -100,9 +97,17 @@ export default function RegisterPage() {
       errorMessage: null,
     })
 
+    const { username, password, email } = data
+
+    const formData = new FormData()
+    formData.append('username', username)
+    formData.append('password', password)
+    formData.append('email', email)
+    formData.append('imageUpload', profileImage)
+
     try {
-      const res = await auth.signup(data.username, data.password, data.email, profileImage)
-      console.log(res, 'resssssss')
+      const res = await auth.signup(formData, password, username)
+
       setData({
         ...data,
         isSubmitting: false,
@@ -110,8 +115,8 @@ export default function RegisterPage() {
       })
 
       setAuthToken(res.token)
+      toast.success("New user Registered successfully")
       return navigate('/')
-
     } catch (error) {
       toast.error(error.message)
       setData({
@@ -122,35 +127,9 @@ export default function RegisterPage() {
     }
   }
 
-  const handleSelect = (index) => {
-    if (avatars.indexOf(avatars[index]) === index) {
-      setProfileImage(avatars[index])
-    }
-  }
-
-  const onFormSubmit = (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append('myfile', file);
-    const config = {
-      headers: {
-        'content-type': 'multipart/form-data'
-      }
-    };
-    axios.post("/api/auth/upload", formData, config)
-      .then((response) => {
-        alert("The file is successfully uploaded");
-        console.log(response, 'responseee')
-      }).catch((error) => {
-        console.log(error)
-      });
-  }
-
   const onChange = (e) => {
-    setFile({ file: e.target.files });
+    setProfileImage(e.target.files[0])
   }
-
-  console.log(file.file, 'file.filefile.filefile.filefile.file')
 
   return (
     <div style={{ overflow: "auto", height: "100vh" }}>
@@ -162,7 +141,9 @@ export default function RegisterPage() {
             validated
             style={{ width: '350px' }}
             onSubmit={handleSignup}
+            encType="multipart/form-data"
           >
+
             <h3 className="mb-3">Join Us!</h3>
 
             <Form.Group controlId='username-register'>
@@ -183,7 +164,6 @@ export default function RegisterPage() {
               </InputGroup>
             </Form.Group>
 
-
             <div className="flex">
               <h3>Choose your Avatar</h3>
               <div className='avatars'>
@@ -193,17 +173,18 @@ export default function RegisterPage() {
                       <img src={avatar} alt="avatar" />
                     </div>
                   ))
-
                 }
               </div>
 
-              {/* <form onSubmit={onFormSubmit} className="form-file">
+              <div className='file-upload'>
+                <img src={profileImage.name ? URL.createObjectURL(profileImage) : profileImage} alt="" />
                 <h1>File Upload</h1>
-                <input type="file" className="custom-file-input" name="myImage" onChange={onChange} />
-                <button className="upload-button" onClick={onFormSubmit} type="submit">Upload to DB</button>
-              </form> */}
+                <input type="file" filename="profileImage" className="custom-file-input" name="profileImage" onChange={onChange} />
+
+              </div>
 
             </div>
+            {/* <Avartars profileImage={profileImage} setProfileImage={setProfileImage} /> */}
 
             <Form.Group>
               <Form.Label htmlFor='email'>email</Form.Label>
@@ -246,9 +227,11 @@ export default function RegisterPage() {
                   Login
                 </Button>
               </Col>
+
               <Button type='submit' disabled={data.isSubmitting}>
                 {data.isSubmitting ? <LoadingSpinner /> : 'Sign up'}
               </Button>
+
             </Row>
           </Form>
         </Row>
