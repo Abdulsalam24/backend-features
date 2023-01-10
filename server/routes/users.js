@@ -48,14 +48,4 @@ router
     }
   })
 
-
-router
-  .route('/top')
-  .get(async (request, response) => {
-
-    console.log('firstfirstfirstfirstfirstfirstfirstfirstfirst')
-})
-
-
-
 export default router

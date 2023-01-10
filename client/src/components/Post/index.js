@@ -127,27 +127,11 @@ const Post = ({
               className="mr-4 bg-border-color rounded-circle overflow-hidden ml-2 p-1"
               style={{ height: "60px", width: "60px", marginTop: "0px" }}
             >
-              {/* <Figure.Image
-                src={author?.profile_image}
-                className="w-100 h-100 mr-4"
-              /> */}
-
-
               <Figure.Image
                 src={author?.profile_image || `${window.location.pathname === "/" ? "." : ".."}/uploads/${author?.profile_image}`}
                 alt="dp"
                 className='w-100 h-100'
               />
-              {/* (
-                  <Figure.Image
-                    src={`${window.location.pathname === "/" ? "." : ".."}/uploads/${author?.profile_image}`}
-                    alt="dp"
-                    className='w-100 h-100'
-                  />
-                )
-              */}
-
-
             </Figure>
           </Link>
 

@@ -19,7 +19,6 @@ router.get("/", async (request, response) => {
       populate: { path: "author", select: ["username"] },
     },
   ];
-
   const posts = await Post.find({})
     .sort({ created: -1 })
     .populate(populateQuery)
